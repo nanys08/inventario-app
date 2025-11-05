@@ -35,15 +35,22 @@ export default function ListaUsuarios() {
   }, []);
 
   // 🔁 Cargar usuarios desde backend
-  const cargarUsuarios = async () => {
-    try {
-      const lista = await obtenerUsuarios();
-      setUsuarios(lista);
-    } catch (error) {
-      console.error(' Error al cargar usuarios:', error);
-      Alert.alert('Error', 'No se pudo cargar la lista de usuarios.');
-    }
-  };
+const cargarUsuarios = async () => {
+  try {
+    const lista = await obtenerUsuarios();
+
+    // 🔤 Ordenar alfabéticamente por nombre
+    const listaOrdenada = lista.sort((a: any, b: any) =>
+      a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' })
+    );
+
+    setUsuarios(listaOrdenada);
+  } catch (error) {
+    console.error(' Error al cargar usuarios:', error);
+    Alert.alert('Error', 'No se pudo cargar la lista de usuarios.');
+  }
+};
+
 
   // 🔹 Confirmar desactivación / activación
   const toggleEstado = (usuario: any) => {
