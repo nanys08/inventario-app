@@ -1,14 +1,24 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, Button, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
+import { DrawerLayout, GestureHandlerRootView } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter, useFocusEffect } from 'expo-router';
 
 export default function Home() {
   const router = useRouter();
   const [usuario, setUsuario] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [drawerRef, setDrawerRef] = useState<any>(null);
 
-  // 🔹 Cargar usuario cada vez que la pantalla está en foco
   useFocusEffect(
     useCallback(() => {
       const cargarUsuario = async () => {
@@ -16,15 +26,11 @@ export default function Home() {
           const data = await AsyncStorage.getItem('usuario');
           if (data) {
             const user = JSON.parse(data);
-            console.log('✅ Usuario cargado desde storage:', user);
             setUsuario(user);
           } else {
-            console.log('⚠️ No hay usuario guardado, redirigiendo al login');
-            setUsuario(null);
             router.replace('/login');
           }
         } catch (error) {
-          console.error('❌ Error al leer usuario del AsyncStorage:', error);
           Alert.alert('Error', 'Hubo un problema cargando tu perfil');
           router.replace('/login');
         } finally {
@@ -36,7 +42,6 @@ export default function Home() {
     }, [router])
   );
 
-  // 🔹 Cerrar sesión
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('usuario');
@@ -44,10 +49,74 @@ export default function Home() {
       Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente.');
       router.replace('/login');
     } catch (error) {
-      console.error('❌ Error al cerrar sesión:', error);
       Alert.alert('Error', 'No se pudo cerrar sesión');
     }
   };
+
+  const renderDrawer = () => (
+    <SafeAreaView style={styles.drawerContainer}>
+      <View style={styles.drawerHeader}>
+        <Icon name="person-circle-outline" size={80} color="#fff" />
+        <Text style={styles.drawerTitle}>{usuario?.nombre}</Text>
+        <Text style={styles.drawerSubtitle}>{usuario?.rol}</Text>
+      </View>
+
+      <View style={styles.drawerBody}>
+        {usuario?.rol === 'ADMIN' ? (
+          <>
+            <TouchableOpacity
+              style={styles.drawerItem}
+              onPress={() => {
+                drawerRef.closeDrawer();
+                router.push('/(admin)/ListaUsuarios');
+              }}
+            >
+              <Icon name="people-outline" size={22} color="#153cc7" />
+              <Text style={styles.drawerText}>Lista de Usuarios</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.drawerItem}
+              onPress={() => {
+                drawerRef.closeDrawer();
+                router.push({
+                  pathname: '/RegistrarUsuario',
+                  params: { rol: usuario.rol, nombre: usuario.nombre },
+                });
+              }}
+            >
+              <Icon name="person-add-outline" size={22} color="#153cc7" />
+              <Text style={styles.drawerText}>Registrar Usuario</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <View style={{ padding: 20 }}>
+            <Text style={{ color: '#555' }}>No tienes permisos de administración.</Text>
+          </View>
+        )}
+
+        {/*  Nuevo botón para Editar Perfil */}
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => {
+            drawerRef.closeDrawer();
+            router.push('/EditarUsuario');
+          }}
+        >
+          <Icon name="create-outline" size={22} color="#153cc7" />
+          <Text style={styles.drawerText}>Editar Perfil</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.drawerItem, { marginTop: 20 }]}
+          onPress={handleLogout}
+        >
+          <Icon name="exit-outline" size={22} color="red" />
+          <Text style={[styles.drawerText, { color: 'red' }]}>Cerrar Sesión</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
 
   if (loading) {
     return (
@@ -58,76 +127,117 @@ export default function Home() {
     );
   }
 
-  if (!usuario) {
-    return (
-      <View style={styles.container}>
-        <Text>No hay sesión activa</Text>
-        <Button title="Volver al Login" onPress={() => router.replace('/login')} />
+  if (!usuario) return null;
+
+  const mainContent = (
+    <SafeAreaView style={styles.container}>
+      {/* 👇 PATH BAR: Pequeña franja superior */}
+      <View style={styles.pathBar}>
+        <Text style={styles.pathText}>🏠 Home / Inicio</Text>
       </View>
-    );
-  }
+
+      {/*  Header principal */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => drawerRef.openDrawer()}>
+          <Icon name="menu-outline" size={32} color="#153cc7" />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Inicio</Text>
+      </View>
+
+      {/*  Contenido principal */}
+      <View style={styles.content}>
+        <Text style={styles.welcomeText}> Hola, {usuario.nombre}</Text>
+        <Text style={styles.subText}>Cédula: {usuario.cedula}</Text>
+        <Text style={styles.subText}>Correo: {usuario.correo}</Text>
+        <Text style={styles.subText}>Rol: {usuario.rol}</Text>
+      </View>
+    </SafeAreaView>
+  );
 
   return (
-    <View style={styles.container}>
-      <Text style={[styles.title, { marginTop: 50 }]}>
-  👋 Bienvenido, {usuario.nombre}
-    </Text>
-      <Text>Cédula: {usuario.cedula}</Text>
-      <Text>Correo: {usuario.correo}</Text>
-      <Text>Rol: {usuario.rol}</Text>
-
-      {/*Botón solo visible si es ADMIN */}
-      {usuario.rol === 'ADMIN' ? (
-        <>
-          <View style={{ marginTop: 20 }}>
-            <Button
-              title="Lista de usuarios"
-              color="#153cc7ff"
-              onPress={() => router.push('/(admin)/ListaUsuarios')}
-            />
-          </View>
-
-          <View style={{ marginTop: 15 }}>
-            <Button
-              title="Registrar Usuario"
-              color="#007AFF"
-              onPress={() =>
-                router.push({
-                  pathname: '/RegistrarUsuario',
-                  params: {
-                    rol: usuario.rol,
-                    nombre: usuario.nombre,
-                    idUsuario: usuario.idUsuario?.toString(),
-                  },
-                })
-              }
-            />
-          </View>
-        </>
-      ) : (
-        <Text style={{ marginTop: 20 }}>No tienes permisos de administración.</Text>
-      )}
-
-      <View style={{ marginTop: 30 }}>
-        <Button title="Cerrar Sesión" color="red" onPress={handleLogout} />
-      </View>
-    </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <DrawerLayout
+        ref={setDrawerRef}
+        drawerWidth={250}
+        drawerPosition="left"
+        renderNavigationView={renderDrawer}
+      >
+        {mainContent}
+      </DrawerLayout>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-    alignItems: 'center', // centra horizontalmente
+    backgroundColor: '#F4F6FA',
   },
-  title: {
+  pathBar: {
+    backgroundColor: '#e9edf7',
+    paddingVertical: 6,
+    paddingHorizontal: 15,
+  },
+  pathText: {
+    fontSize: 13,
+    color: '#4b5563',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#fff',
+    elevation: 2,
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#153cc7',
+    marginLeft: 10,
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 50, // 👈 separa el texto del borde superior
-    marginBottom: 20,
-    textAlign: 'center', // 👈 centra el texto
-    color: '#153cc7', // un azul elegante
+    color: '#153cc7',
+  },
+  subText: {
+    fontSize: 16,
+    color: '#333',
+    marginTop: 8,
+  },
+  drawerContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  drawerHeader: {
+    backgroundColor: '#153cc7',
+    alignItems: 'center',
+    paddingVertical: 30,
+  },
+  drawerTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  drawerSubtitle: {
+    color: '#cbd5e1',
+    fontSize: 14,
+  },
+  drawerBody: {
+    padding: 15,
+  },
+  drawerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  drawerText: {
+    fontSize: 16,
+    marginLeft: 12,
+    color: '#153cc7',
   },
 });

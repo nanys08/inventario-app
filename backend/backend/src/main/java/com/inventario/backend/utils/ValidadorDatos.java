@@ -7,7 +7,7 @@ public class ValidadorDatos {
 
     private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // 🔹 Validar credenciales en login
+    //  Validar credenciales en login
     public static void validarCredenciales(Usuario usuario, String contrasenaIngresada) {
         if (usuario == null) {
             throw new IllegalArgumentException("El usuario no existe.");
@@ -17,13 +17,13 @@ public class ValidadorDatos {
             throw new IllegalArgumentException("La contraseña no puede estar vacía.");
         }
 
-        // 🔹 Validar coincidencia de contraseña (encriptada)
+        //  Validar coincidencia de contraseña (encriptada)
         if (!passwordEncoder.matches(contrasenaIngresada, usuario.getContrasena())) {
             throw new IllegalArgumentException("Contraseña incorrecta.");
         }
     }
 
-    // 🔹 Validar datos del usuario al registrar o actualizar
+    //  Validar datos del usuario al registrar o actualizar
     public static void validarUsuario(Usuario usuario) {
         if (usuario == null) {
             throw new IllegalArgumentException("El usuario no puede ser nulo.");
@@ -51,8 +51,8 @@ public class ValidadorDatos {
         }
 
         String rol = usuario.getRol().toUpperCase();
-        if (!rol.equals("ADMIN") && !rol.equals("USER")) {
-            throw new IllegalArgumentException("El rol debe ser ADMIN o USER.");
+        if (!rol.equals("ADMIN") && !rol.equals("TECNICO")) {
+            throw new IllegalArgumentException("El rol debe ser ADMIN o TECNICO.");
         }
     }
 }

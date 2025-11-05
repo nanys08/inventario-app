@@ -38,25 +38,25 @@ public class UsuarioService {
 
         Usuario usuario = usuarioOpt.get();
 
-        // 🚫 Verificar si está inactivo
+        //  Verificar si está inactivo
      if (!usuario.isActivo()) {
     throw new IllegalArgumentException("El usuario está desactivado. Contacta al administrador.");
 }
 
 
 
-        // ✅ Validar contraseña
+        //  Validar contraseña
         ValidadorDatos.validarCredenciales(usuario, contrasena);
 
         return Optional.of(usuario);
     }
 
-    // 🔹 Editar perfil
+    //  Editar perfil
     public Usuario actualizarPerfil(Long idUsuario, Usuario nuevosDatos) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // 🔸 Si se envía una nueva contraseña, validar todo
+        //  Si se envía una nueva contraseña, validar todo
         if (nuevosDatos.getContrasena() != null && !nuevosDatos.getContrasena().isEmpty()) {
             ValidadorDatos.validarUsuario(nuevosDatos);
             usuario.setContrasena(passwordEncoder.encode(nuevosDatos.getContrasena()));
@@ -80,8 +80,8 @@ public class UsuarioService {
             }
 
             String rol = nuevosDatos.getRol().toUpperCase();
-            if (!rol.equals("ADMIN") && !rol.equals("USER")) {
-                throw new IllegalArgumentException("El rol debe ser ADMIN o USER.");
+            if (!rol.equals("ADMIN") && !rol.equals("TECNICO")) {
+                throw new IllegalArgumentException("El rol debe ser ADMIN o TECNICO.");
             }
         }
 
@@ -93,12 +93,12 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    // 🔹 Obtener todos los usuarios
+    //  Obtener todos los usuarios
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
     }
 
-    // 🔹 Obtener usuario por id
+    //  Obtener usuario por id
     public Optional<Usuario> obtenerPorId(Long idUsuario) {
         return usuarioRepository.findById(idUsuario);
     }

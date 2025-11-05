@@ -1,5 +1,5 @@
 # ===========================
-# 🌐 FRONTEND (React Native)
+#  FRONTEND (React Native)
 # ===========================
 node_modules/
 .expo/
@@ -22,7 +22,7 @@ yarn-error.log
 *.log
 
 # ===========================
-# ☕ BACKEND (Spring Boot)
+#  BACKEND (Spring Boot)
 # ===========================
 target/
 *.iml

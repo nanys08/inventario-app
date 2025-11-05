@@ -40,7 +40,7 @@ export default function ListaUsuarios() {
       const lista = await obtenerUsuarios();
       setUsuarios(lista);
     } catch (error) {
-      console.error('❌ Error al cargar usuarios:', error);
+      console.error(' Error al cargar usuarios:', error);
       Alert.alert('Error', 'No se pudo cargar la lista de usuarios.');
     }
   };
@@ -63,7 +63,7 @@ export default function ListaUsuarios() {
               Alert.alert('Éxito', `Usuario ${usuario.activo ? 'desactivado' : 'activado'} correctamente.`);
               await cargarUsuarios();
             } catch (error) {
-              console.error('❌ Error al cambiar estado:', error);
+              console.error(' Error al cambiar estado:', error);
               Alert.alert('Error', 'No se pudo cambiar el estado del usuario.');
             }
           },

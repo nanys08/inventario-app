@@ -13,7 +13,7 @@ export const loginUsuario = async (cedula: string, contrasena: string): Promise<
     const response = await api.post('/api/usuarios/login', { cedula, contrasena });
     return response.data;
   } catch (error: any) {
-    console.log('❌ Error en loginUsuario:', error.response?.data || error.message);
+    console.log(' Error en loginUsuario:', error.response?.data || error.message);
 
     let mensaje = 'Error al iniciar sesión.';
     if (typeof error.response?.data === 'string') {
@@ -35,10 +35,10 @@ export const registrarUsuario = async (usuario: any): Promise<Usuario> => {
     cedula: usuario.cedula,
     correo: usuario.correo,
     contrasena: usuario.contrasena,
-    rol: usuario.rol?.toUpperCase() || 'USER',
+    rol: usuario.rol?.toUpperCase() || 'TECNICO',
   };
 
-  console.log('📦 Enviando usuario a registrar:', payload);
+  console.log(' Enviando usuario a registrar:', payload);
   const response = await api.post('/api/usuarios/registrar', payload, {
     headers: { 'Content-Type': 'application/json' },
   });
@@ -54,12 +54,12 @@ export const obtenerUsuarios = async (): Promise<Usuario[]> => {
 // 🔹 Cambiar estado (activar / desactivar usuario)
 export const cambiarEstadoUsuario = async (idUsuario: number, activo: boolean): Promise<Usuario> => {
   try {
-    console.log(`🔄 Cambiando estado del usuario ${idUsuario} a: ${activo ? 'Activo' : 'Inactivo'}`);
+    console.log(` Cambiando estado del usuario ${idUsuario} a: ${activo ? 'Activo' : 'Inactivo'}`);
     const response = await api.put(`/api/usuarios/${idUsuario}/estado`, { activo });
-    console.log('✅ Estado cambiado correctamente:', response.data);
+    console.log(' Estado cambiado correctamente:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('❌ Error al cambiar estado del usuario:', error.response?.data || error.message);
+    console.error(' Error al cambiar estado del usuario:', error.response?.data || error.message);
     throw new Error(error.response?.data?.error || 'Error al cambiar estado del usuario.');
   }
 };
@@ -78,12 +78,12 @@ export const actualizarUsuario = async (
 // 🔹 Obtener usuario por ID
 export const obtenerUsuarioPorId = async (id: string | number): Promise<Usuario> => {
   try {
-    console.log(`📡 Solicitando usuario con ID: ${id}`);
+    console.log(` Solicitando usuario con ID: ${id}`);
     const response = await api.get(`/api/usuarios/${id}`);
-    console.log('✅ Usuario obtenido:', response.data);
+    console.log(' Usuario obtenido:', response.data);
     return response.data;
   } catch (error: any) {
-    console.error('❌ Error en obtenerUsuarioPorId:', error.response?.data || error.message);
+    console.error(' Error en obtenerUsuarioPorId:', error.response?.data || error.message);
     throw error;
   }
 };

@@ -28,7 +28,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // 🔹 Registrar un nuevo usuario
+    //  Registrar un nuevo usuario
     @PostMapping("/registrar")
     public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
     try {
@@ -57,19 +57,19 @@ public class UsuarioController {
 }
 
 
-    // 🔹 Actualizar datos del usuario
+    //  Actualizar datos del usuario
     @PutMapping("/{idUsuario}")
     public Usuario actualizar(@PathVariable Long idUsuario, @RequestBody Usuario usuario) {
         return usuarioService.actualizarPerfil(idUsuario, usuario);
     }
 
-    // 🔹 Listar todos los usuarios
+    //  Listar todos los usuarios
     @GetMapping
     public List<Usuario> listarUsuarios() {
         return usuarioService.obtenerTodos();
     }
 
-    // 🔹 Obtener un usuario por su ID
+    //  Obtener un usuario por su ID
     @GetMapping("/{idUsuario}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long idUsuario) {
         Optional<Usuario> usuario = usuarioService.obtenerPorId(idUsuario);
@@ -98,7 +98,7 @@ public ResponseEntity<?> cambiarEstadoUsuario(
 }
 
 
-    // 🔹 Login de usuario (por cédula y contraseña)
+    //  Login de usuario (por cédula y contraseña)
 @PostMapping("/login")
 public ResponseEntity<?> login(@RequestBody Map<String, String> credenciales) {
     try {
@@ -116,7 +116,7 @@ public ResponseEntity<?> login(@RequestBody Map<String, String> credenciales) {
         }
 
     } catch (IllegalArgumentException e) {
-        // 💥 Captura mensajes como “Contraseña incorrecta” o “Cédula no encontrada”
+        //  Captura mensajes como “Contraseña incorrecta” o “Cédula no encontrada”
         return ResponseEntity.status(400).body(e.getMessage());
     } catch (Exception e) {
         e.printStackTrace();

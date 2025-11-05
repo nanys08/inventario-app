@@ -11,7 +11,7 @@ export default function RegistrarUsuario() {
   const [cedula, setCedula] = useState('');
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
-  const [rolNuevo, setRolNuevo] = useState('USER');
+  const [rolNuevo, setRolNuevo] = useState('TECNICO');
 
   // 🔒 Verificar sesión y rol al montar y al volver a la pantalla
   const verificarAcceso = async () => {
@@ -36,7 +36,7 @@ export default function RegistrarUsuario() {
     verificarAcceso();
   }, []);
 
-  // 🔁 También verificar cada vez que se vuelve a esta pantalla
+  //  También verificar cada vez que se vuelve a esta pantalla
   useFocusEffect(
     React.useCallback(() => {
       verificarAcceso();
@@ -62,7 +62,7 @@ export default function RegistrarUsuario() {
       Alert.alert('Éxito', `Usuario ${response.nombre} registrado correctamente`);
       router.push('/home');
     } catch (error: any) {
-  console.error('❌ Error al registrar usuario:', error.response?.data || error.message);
+  console.error(' Error al registrar usuario:', error.response?.data || error.message);
 
   Alert.alert(
     'Error',
@@ -88,7 +88,7 @@ export default function RegistrarUsuario() {
       <TextInput placeholder="Cédula" value={cedula} onChangeText={setCedula} style={styles.input} />
       <TextInput placeholder="Correo" value={correo} onChangeText={setCorreo} style={styles.input} />
       <TextInput placeholder="Contraseña" value={contrasena} secureTextEntry onChangeText={setContrasena} style={styles.input} />
-      <TextInput placeholder="Rol (ADMIN o USER)" value={rolNuevo} onChangeText={setRolNuevo} style={styles.input} />
+      <TextInput placeholder="Rol (ADMIN o TECNICO)" value={rolNuevo} onChangeText={setRolNuevo} style={styles.input} />
 
       <Button title="Registrar" onPress={handleRegistrar} />
     </View>

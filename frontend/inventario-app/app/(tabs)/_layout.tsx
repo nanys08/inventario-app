@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs } from 'expo-router';
+import { Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function TabsLayout() {
+export default function StackLayout() {
   const [rol, setRol] = useState<string | null>(null);
 
-  // 🔹 Cargar el rol actual desde AsyncStorage
+  // Cargar el rol actual desde AsyncStorage
   useEffect(() => {
     const cargarRol = async () => {
       try {
@@ -23,59 +23,21 @@ export default function TabsLayout() {
     };
 
     cargarRol();
-
-    // 🔁 Escuchar cambios en AsyncStorage (por ejemplo, al cerrar sesión)
-    const interval = setInterval(cargarRol, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   return (
-    <Tabs>
-      {/* 🔹 Siempre visible */}
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: 'Inicio',
-          headerShown: true,
-        }}
-      />
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="home" />
 
-      <Tabs.Screen
-        name="RegistrarUsuario"
-        options={{
-          title: 'Registrar Usuario',
-          headerShown: true,
-        }}
-      />
+      <Stack.Screen name="RegistrarUsuario" />
+      <Stack.Screen name="EditarUsuario" />
 
-      <Tabs.Screen
-        name="EditarUsuario"
-        options={{
-          title: 'Editar Perfil',
-          headerShown: true,
-        }}
-      />
-
-      {/* 👇 Solo visible si el usuario tiene rol ADMIN */}
       {rol === 'ADMIN' && (
         <>
-          <Tabs.Screen
-            name="ListaUsuarios"
-            options={{
-              title: 'Usuarios',
-              headerShown: true,
-            }}
-          />
-
-          <Tabs.Screen
-            name="EditarUsuarioAdmin"
-            options={{
-              title: 'Editar Usuario (Admin)',
-              headerShown: true,
-            }}
-          />
+          <Stack.Screen name="ListaUsuarios" />
+          <Stack.Screen name="EditarUsuarioAdmin" />
         </>
       )}
-    </Tabs>
+    </Stack>
   );
 }

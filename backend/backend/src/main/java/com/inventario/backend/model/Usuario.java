@@ -24,13 +24,13 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String correo;
 
-    // 👇 Cambiado para permitir lectura desde el JSON pero ocultarlo en las respuestas
+    //  Cambiado para permitir lectura desde el JSON pero ocultarlo en las respuestas
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String contrasena;
 
     @Column(nullable = false)
-    private String rol; // Ej: "ADMIN", "INVENTARIO", "USUARIO"
+    private String rol; // Ej: "ADMIN", "TECNICO"
 
     @Column(nullable = false)
     private boolean activo = true;

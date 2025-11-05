@@ -25,7 +25,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ✅ Agrega este bean para que funcione el PasswordEncoder
+    //  Agrega este bean para que funcione el PasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

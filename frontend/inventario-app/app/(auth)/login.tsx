@@ -10,7 +10,7 @@ export default function Login() {
   const [bloqueado, setBloqueado] = useState(false);
   const router = useRouter();
 
-  // 🧠 Verifica si ya hay sesión activa al entrar al login
+  //  Verifica si ya hay sesión activa al entrar al login
   useFocusEffect(
     useCallback(() => {
       const verificarSesion = async () => {
@@ -28,7 +28,6 @@ export default function Login() {
             },
           });
         } else {
-          console.log('🧹 No hay sesión activa, desbloqueando login.');
           setBloqueado(false);
           setCedula('');
           setContrasena('');
@@ -39,7 +38,7 @@ export default function Login() {
     }, [router])
   );
 
-  // 🔹 Manejar inicio de sesión
+  // Manejar inicio de sesión
   const handleLogin = async () => {
     if (!cedula || !contrasena) {
       Alert.alert('Error', 'Por favor ingresa tu cédula y contraseña.');
@@ -62,9 +61,9 @@ export default function Login() {
         },
       });
     } catch (error: any) {
-      console.error('❌ Error al iniciar sesión:', error);
 
-      // 🔹 Asegurar que el mensaje venga del backend o usar uno genérico
+
+      //  Asegurar que el mensaje venga del backend o usar uno genérico
       const mensaje =
         error?.message ||
         error?.response?.data ||

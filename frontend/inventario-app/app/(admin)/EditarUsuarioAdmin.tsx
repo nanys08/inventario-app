@@ -42,7 +42,7 @@ export default function EditarUsuarioAdmin() {
     const cargarUsuario = async () => {
       try {
         if (!idUsuario) {
-          console.log('⚠️ No se recibió idUsuario');
+          console.log(' No se recibió idUsuario');
           return;
         }
 
@@ -50,13 +50,13 @@ export default function EditarUsuarioAdmin() {
           Array.isArray(idUsuario) ? parseInt(idUsuario[0]) : parseInt(idUsuario as string);
 
         if (isNaN(idValido)) {
-          console.log('⚠️ idUsuario no es un número válido:', idUsuario);
+          console.log(' idUsuario no es un número válido:', idUsuario);
           return;
         }
 
-        console.log('📡 Obteniendo usuario con ID:', idValido);
+        console.log(' Obteniendo usuario con ID:', idValido);
         const data = await obtenerUsuarioPorId(idValido);
-        console.log('✅ Usuario cargado:', data);
+        console.log(' Usuario cargado:', data);
 
         setUsuarioEditado(data);
         setNombre(data.nombre);
@@ -64,7 +64,7 @@ export default function EditarUsuarioAdmin() {
         setCorreo(data.correo);
         setRol(data.rol);
       } catch (error) {
-        console.error('❌ Error al cargar usuario:', error);
+        console.error(' Error al cargar usuario:', error);
         Alert.alert('Error', 'No se pudo cargar la información del usuario.');
         router.back();
       } finally {
@@ -101,14 +101,14 @@ export default function EditarUsuarioAdmin() {
         datosActualizados.contrasena = contrasena;
       }
 
-      console.log('📤 Enviando datos actualizados:', datosActualizados);
+      console.log(' Enviando datos actualizados:', datosActualizados);
       await actualizarUsuario(idValido, datosActualizados);
       Alert.alert('Éxito', 'Usuario actualizado correctamente.');
       router.push('/ListaUsuarios');
     } catch (error: any) {
-  console.error('❌ Error al actualizar usuario:', error);
+  console.error(' Error al actualizar usuario:', error);
 
-  // 🧩 Intentar obtener mensaje detallado del backend
+  //  Intentar obtener mensaje detallado del backend
   const mensajeError =
     error.response?.data || // cuando el backend manda texto plano
     error.response?.data?.message || // si manda JSON { message: ... }
@@ -143,7 +143,7 @@ export default function EditarUsuarioAdmin() {
   placeholder="Cédula"
   value={cedula}
   onChangeText={setCedula}
-  editable={usuarioAdmin?.rol === 'ADMIN'} // ✅ solo editable si es admin
+  editable={usuarioAdmin?.rol === 'ADMIN'} //  solo editable si es admin
   style={[
     styles.input,
     usuarioAdmin?.rol !== 'ADMIN' && styles.disabledInput, // gris si no es admin
@@ -159,7 +159,7 @@ export default function EditarUsuarioAdmin() {
         style={styles.input}
       />
       <TextInput
-        placeholder="Rol (ADMIN o USER)"
+        placeholder="Rol (ADMIN o TECNICO)"
         value={rol}
         onChangeText={setRol}
         style={styles.input}
